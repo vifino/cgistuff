@@ -6,6 +6,8 @@ CC?=gcc
 CFLAGS=-Os -s
 LDFLAGS=-m32 -static -ffunction-sections -fdata-sections -Wl,--gc-sections
 
+STRIP?=strip --strip-all
+
 ###
 ## Targets
 ###
@@ -15,7 +17,7 @@ all: hello_worlds
 
 # Lists
 # List of hello worlds.
-HELLO_WORLDS:=asm_hello_world c_hello_world
+HELLO_WORLDS:=asm_hello_world asm_linux_hello_world c_hello_world
 hello_worlds: $(HELLO_WORLDS)
 
 ##
@@ -25,12 +27,16 @@ hello_worlds: $(HELLO_WORLDS)
 # ASM
 asm_hello_world: hello_worlds/asm_hello_world.S.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
-	strip --strip-all $@
+	$(STRIP) $@
+
+asm_linux_hello_world: hello_worlds/asm_linux_hello_world.S.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -nostdlib $< -o $@
+	$(STRIP) $@
 
 # C
 c_hello_world: hello_worlds/c_hello_world.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
-	strip --strip-all $@
+	$(STRIP) $@
 
 
 ###
